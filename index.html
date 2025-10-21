@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang = "ru">
+<head>
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content = "width = device - width, initial - scale = 1.0">
+	<title>Перекусон</title>
+	<link rel = "stylesheet" href = "style.css">
+	<link rel = "icon" href = "icon.png" type = "image/x-icon">
+</head>
+<body>
+	<header>
+		<div class = "head">
+			<img class = "img1" src = "icon.png" alt = "Иконка">
+			<span>Перекусон</span>
+		</div>
+		<div class = "profile-dropdown">
+			<button class = "profile-btn initials-btn" id = "profileBtn">👤</button>
+			<div class = "dropdown-menu" id = "dropdownMenu">
+				<div class = "menu-guest">
+					<a href = "login.html">Вход</a>
+					<a href = "register.html">Регистрация</a>
+				</div>
+				<div class = "menu-user" style = "display: none;">
+					<a href = "profile.html">Мой прифиль</a>
+					<a href = "settings.html">Настройки</a>
+					<a href = "" class = "da" onclick = "logout()">Выйти</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<nav>
+		<a href = "index.html">Главная</a>
+		<a href = "menu.html">Меню</a>
+		<a href = "about.html">О нас</a>
+		<a href = "" class = "nav-button admin-only" id = "adminPanelBtn" onclick = "toggleAdminPanel()" style = "display:none;background:#dc3545;"</a>
+	</nav>
+	<main>
+        <div class="container">
+            <h1>Добро пожаловать в Перекусон!</h1>
+            <p>Быстрые и вкусные перекусы для занятых людей</p>
+            
+            <div class="auth-status">
+                <p>Статус: <span id="status">Не авторизован</span></p>
+            </div>
+			
+			<div id = "adminPanel" class = "admin-panel" style = "display: none;">
+				<h2>Панель администратора</h2>
+				<div class = "admin-section">
+					<h3>Добавить акцию</h3>
+					<form id = "addPromotionForm" class = "admin-form">
+						<div class = "form-group">
+							<label for = "promotionTitle">Название акции:</label>
+							<input type = "text" id = "promotionTitle" required>
+						</div>
+						<div class = "form-group">
+							<label for = "promotionDescription">Описаниие:</label>
+							<textarea id = "promotionDescription" rows = "3" required></textarea>
+						</div>
+						<div class = "form-group">
+							<label for = "promorionImage">URL изображения:</label>
+							<input type = "url" id = "promotionImage" placeholder = "https://example.com/image.jpg">
+						</div>
+						<div class = "form-row">
+							<div class = "form-group">
+								<label for = "promotionStartDate">Дата начала:</label>
+								<input type = "date" id = "promotionStartDate" required>
+							</div>
+							<div class = "form-group">
+								<label for = "promotionEndDate">Дата окончания:</label>
+								<input type = "date" id = "promotionEndDate" required>
+							</div>
+						</div>
+						<button type = "submit" class = "submit-btn">Добавить акцию</button>
+					</form>	
+				</div>
+				<div class="admin-section">
+					<h3>Управление акциями</h3>
+					<div id="promotionsList" class="promotions-list"></div>
+				</div>
+            </div>
+            <section class="promotions-section">
+                <h2>🎉 Текущие акции</h2>
+                <div id="promotionsContainer" class="promotions-container">
+                </div>
+            </section>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h3>🍔 Быстро</h3>
+                    <p>Заказ за 5 минут</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🚀 Удобно</h3>
+                    <p>Доставка к вам</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 Выгодно</h3>
+                    <p>Лучшие цены</p>
+                </div>
+            </div>
+        </div>
+    </main>
+	<footer>
+		<div class = "footer-content">
+			<p>&copy; 2025 Перекусон. Все права защищены</p>
+			<p>Телефон: +7 (998) 123-45-02</p>
+		</div>
+	</footer>
+	<script src = "js/auth.js"></script>
+	<script src = "js/main.js"></script>
+	<script src = "js/admin.js"></script>
+</body>
+</html>
