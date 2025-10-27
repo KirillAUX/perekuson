@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перекусон</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="head">
+            <img class="img1" src="icon.png" alt="Иконка">
+            <span>Перекусон</span>
+        </div>
+        <div class="profile-dropdown">
+            <button class="profile-btn initials-btn" id="profileBtn">👤</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <!-- Меню для НЕавторизованного пользователя -->
+                <div class="menu-guest">
+                    <a href="login.html">Вход</a>
+                    <a href="register.html">Регистрация</a>
+                </div>
+                <!-- Меню для авторизованного пользователя (изначально скрыто) -->
+                <div class="menu-user" style="display: none;">
+                    <a href="profile.html">Мой профиль</a>
+                    <a href="settings.html">Настройки</a>
+                    <a href="#" class="da" onclick="logout()">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <a href="index.html" class="nav-button">Главная</a>
+        <a href="menu.html" class="nav-button">Меню</a>
+        <a href="about.html" class="nav-button">О нас</a>
+        <!-- Кнопка админ-панели (только для администраторов) -->
+        <a href="#" class="nav-button admin-only" id="adminPanelBtn" onclick="toggleAdminPanel()" style="display: none; background: #dc3545;">
+            🔧 Админ-панель
+        </a>
+    </nav>
+
+    <main>
+		<h2>Меню</h2>
+		<details>
+			<summary>Бургеры</summary>
+			<ul>
+				<li>Чизбургер</li>
+				<li>Чикенбургер</li>
+				<li>Вегетарианский бургер</li>
+				<li>Бургер беконом</li>
+				<li>Мини-сендвич светчиной и сыром</li>
+			</ul>
+		</details>
+		<details>
+			<summary>Крылошки и наггетсы</summary>
+			<ul>
+				<li>Куриные крылышки</li>
+				<li>Наггетсы</li>
+			</ul>
+		</details>
+		<details>
+			<summary>Картофель</summary>
+			<ul>
+				<li>Картофель фри<li>
+				<li>Картофель по деревенски</li>
+			</ul>
+		</details>
+		<details>
+			<summary>Напитки</summary>
+			<ul>
+				<li>Минеральная вода</li>
+			</ul>
+			<details>
+				<summary>Холодные напитки</summary>
+				<ul>
+					<li>Добрый кола</li>
+					<li>Добрый лимон-лайм</li>
+					<li>Добрый апельсин</li>
+				</ul>
+			</details>
+			<details>
+				<summary>Чай</summary>
+				<ul>
+					<li>Зелёный</li>
+					<li>Чёрный</li>
+					<li>Фруктовйы</li>
+				</ul>
+			</details>
+			<details>
+			<summary>Соки</summary>
+			<ul>
+				<li>Апельсиновый</li>
+				<li>Яблочный</li>
+				<li>Вишнёвый</li>
+			</ul>
+		</details>
+		</details>
+		<details>
+			<summary>Десерты</summary>
+			<details>
+				<summary>Мороженное</summary>
+				<ul>
+					<li>шоколадное</li>
+					<li>ванильное</li>
+					<li>С клубникой</li>
+				</ul>
+			</details>
+			<details>
+				<summary>Печенье</summary>
+				<ul>
+					<li>Шоколадное</li>
+					<li>Овсяное</li>
+					<li>Песочное</li>
+				</ul>
+			</details>
+		</details>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Перекусон. Все права защищены.</p>
+            <p>Телефон: +7 (999) 123-45-67</p>
+        </div>
+    </footer>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
+
