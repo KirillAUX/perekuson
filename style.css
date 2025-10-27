@@ -505,4 +505,8 @@ main{
         font-size: 14px;
         padding: 8px 12px;
     }
+
+}
+details{
+	bacground-color: #0D56A6;
 }
