@@ -507,23 +507,18 @@ main{
     }
 
 }
-/* Исправлено: spelling 'solid' вместо 'soild' */
 details {
     background: #0D56A6;
-    border: 1px solid #ddd; /* исправлено 'soild' на 'solid' */
+    border: 1px solid #ddd;
     border-radius: 8px;
     margin: 10px 0;
     overflow: hidden;
     transition: all 0.3s ease;
 }
-
-/* Добавлено: чтобы при наведении менялся цвет границы и появлялась тень */
 details:hover {
     border-color: #007bff;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
 }
-
-/* Стиль для summary */
 summary {
     padding: 15px 20px;
     background: #f8f9fa;
@@ -534,13 +529,9 @@ summary {
     position: relative; /* исправлено 'relation' на 'relative' */
     transition: background 0.3s ease;
 }
-
-/* При наведении на summary меняется фон */
 summary:hover {
     background: #e9ecef;
 }
-
-/* Стиль для псевдоэлемента before */
 summary::before {
     content: '↪';
     position: absolute;
@@ -550,14 +541,10 @@ summary::before {
     transition: transform 0.3s ease;
     color: #666;
 }
-
-/* При открытом состоянии details меняется стрелка */
 details[open] summary::before {
-    transform: translateY(-50%) rotate(90deg); /* исправлено 'tarnsform' на 'transform' */
+    transform: translateY(-50%) rotate(90deg);
     color: #007bff;
 }
-
-/* Стиль для вложенного div внутри details, если есть */
 details > div {
     padding: 20px;
     border: 1px solid #eee;
