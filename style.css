@@ -533,7 +533,7 @@ summary:hover{
 	background:#e9ecef;
 }
 summary::before{
-	content:"↪";
+	content:'↪';
 	position:absolute;
 	right:20px;
 	top:50%;
@@ -550,4 +550,5 @@ details > div{
 	border:1px solid #eee;
 	background:white;
 }
+
 
