@@ -507,48 +507,59 @@ main{
     }
 
 }
-details{
-	background: #0D56A6;
-	border: 1px soild #ddd;
-	border-radius: 8px;
-	margin:10px 0;
-	overflow:hidden;
-	transition: all 0.3s ease;
-}
-details:hover{
-	border-color:#007bff;
-	box-shadow:0 2px 8px rgba(0,123,255,0.1);
-}
-summary{
-	padding:15px 20px;
-	background:#f8f9fa;
-	cursor:pointer;
-	font-size:16px;
-	font-weight:600;
-	list-style:none;
-	position:relation;
-	transition:background 0.3s ease;
-}
-summary:hover{
-	background:#e9ecef;
-}
-summary::before{
-	content:'↪';
-	position:absolute;
-	right:20px;
-	top:50%;
-	transform:translateY(-50%);
-	transition:transform 0.3s ease;
-	color:#666;
-}
-details[open] summary::before{
-	tarnsform:translateY(-50%) rotate(90deg);
-	color:#007bff;
-}
-details > div{
-	padding:20px;
-	border:1px solid #eee;
-	background:white;
+/* Исправлено: spelling 'solid' вместо 'soild' */
+details {
+    background: #0D56A6;
+    border: 1px solid #ddd; /* исправлено 'soild' на 'solid' */
+    border-radius: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
+/* Добавлено: чтобы при наведении менялся цвет границы и появлялась тень */
+details:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
 
+/* Стиль для summary */
+summary {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    list-style: none;
+    position: relative; /* исправлено 'relation' на 'relative' */
+    transition: background 0.3s ease;
+}
+
+/* При наведении на summary меняется фон */
+summary:hover {
+    background: #e9ecef;
+}
+
+/* Стиль для псевдоэлемента before */
+summary::before {
+    content: '↪';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+/* При открытом состоянии details меняется стрелка */
+details[open] summary::before {
+    transform: translateY(-50%) rotate(90deg); /* исправлено 'tarnsform' на 'transform' */
+    color: #007bff;
+}
+
+/* Стиль для вложенного div внутри details, если есть */
+details > div {
+    padding: 20px;
+    border: 1px solid #eee;
+    background: white;
+}
