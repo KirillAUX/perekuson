@@ -508,7 +508,7 @@ main{
 
 }
 details{
-	background: yellow;
+	background: #007bff;
 	border: 1px soild #ddd;
 	border-radius: 8px;
 	margin:10px 0;
@@ -543,11 +543,12 @@ summary::before{
 }
 details[open] summary::before{
 	tarnsform:translateY(-50%) rotate(90deg);
-	color:#007bff;
+	color:#fffd0e;
 }
 details > div{
 	padding:20px;
 	border:1px solid #eee;
 	background:white;
 }
+
 
