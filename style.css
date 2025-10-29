@@ -508,7 +508,7 @@ main{
 
 }
 details{
-	background: #0D56A6;
+	background: yellow;
 	border: 1px soild #ddd;
 	border-radius: 8px;
 	margin:10px 0;
@@ -550,3 +550,4 @@ details > div{
 	border:1px solid #eee;
 	background:white;
 }
+
