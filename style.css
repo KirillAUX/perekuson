@@ -508,7 +508,7 @@ main{
 
 }
 details {
-    background: #0D56A6;
+    background: #007bff;
     border: 1px solid #ddd;
     border-radius: 8px;
     margin: 10px 0;
@@ -543,11 +543,12 @@ summary::before {
 }
 details[open] summary::before {
     transform: translateY(-50%) rotate(90deg);
-    color: #007bff;
+    color: yellow;
 }
 details > div {
     padding: 20px;
     border: 1px solid #eee;
     background: white;
 }
+
 
