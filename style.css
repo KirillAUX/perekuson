@@ -543,12 +543,13 @@ summary::before {
 }
 details[open] summary::before {
     transform: translateY(-50%) rotate(90deg);
-    color: yellow;
+    color: #fffd0e;
 }
 details > div {
     padding: 20px;
     border: 1px solid #eee;
     background: white;
 }
+
 
 
