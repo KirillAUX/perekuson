@@ -3,11 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name = "theme-color" content = "#A63F00">
+    <meta name= "description" content = "Перекусон">
     <title>Перекусон</title>
+    <link rel = "manifest" href = "manifest.json">
+    <link rel = "apple-touch-icon" href = "icons/icon-152x152.png">
+    <link rel = "preload" href = "js/auth.js" as = "script">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel = "preload" href= "style.css" as = "style">
 </head>
 <body>
+    <div id = "installPromt" class = "install-promt" style = "dysplay: none;">
+        <div class = "install-content">
+            <p>Устфновите Прекусон на своё устройство для быстрого доступа!</p>
+            <button id = "installButton" class = "install-btn">Установить</button>
+            <button id = "dismissInstall" class = "dismis-btn">Позже</button>
+        </div>
+    </div>
+    <div id = "offlineAlert" class = "offline-alter" style = "display: none;">
+        <span>Вы в оффлайн-режиме. Некоторые функции могут быть не доступны</span>
+    </div>
     <header>
         <div class="head">
             <img class="img1" src="icon.png" alt="Иконка">
@@ -35,6 +51,7 @@
         <a href="index.html" class="nav-button">Главная</a>
         <a href="menu.html" class="nav-button">Меню</a>
         <a href="about.html" class="nav-button">О нас</a>
+        <a href = "" class = "nav-button">Корзина(<span id = "cartCount">0</span>)</a>
         <!-- Кнопка админ-панели (только для администраторов) -->
         <a href="#" class="nav-button admin-only" id="adminPanelBtn" onclick="toggleAdminPanel()" style="display: none; background: #dc3545;">
             🔧 Админ-панель
@@ -129,4 +146,5 @@
     <script src="js/admin.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
