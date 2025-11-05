@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Перекусон</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        .warning { background: #fff3cd; }
+        button { padding: 10px; margin: 5px; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Отладка авторизации администратора</h1>
+
+    <div class="section">
+        <h2>1. Проверка системы аутентификации</h2>
+        <button onclick="checkAuthSystem()">Проверить authSystem</button>
+        <div id="authStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. Создать тестового администратора</h2>
+        <button onclick="createAdminUser()">Создать администратора</button>
+        <button onclick="createTestUsers()">Создать всех тестовых пользователей</button>
+        <div id="userCreationStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. Принудительный вход</h2>
+        <button onclick="forceLoginAsAdmin()">Войти как администратор</button>
+        <button onclick="forceLoginAsUser()">Войти как пользователь</button>
+        <div id="loginStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Проверка прав</h2>
+        <button onclick="checkAdminRights()">Проверить права администратора</button>
+        <div id="rightsStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. Очистка данных</h2>
+        <button onclick="clearAllData()" style="background: #ff6b6b;">Очистить все данные</button>
+        <div id="clearStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>6. Текущее состояние</h2>
+        <button onclick="showCurrentState()">Показать состояние</button>
+        <pre id="currentState"></pre>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Ждем загрузки auth.js
+        setTimeout(() => {
+            if (typeof authSystem !== 'undefined') {
+                document.getElementById('authStatus').innerHTML = 
+                    '<div class="success">✅ authSystem загружен</div>';
+            } else {
+                document.getElementById('authStatus').innerHTML = 
+                    '<div class="error">❌ authSystem не загружен</div>';
+            }
+        }, 1000);
+
+        function checkAuthSystem() {
+            const status = document.getElementById('authStatus');
+            let html = '<h3>Проверка authSystem:</h3>';
+            
+            if (typeof authSystem === 'undefined') {
+                html += '<div class="error">❌ authSystem не определен</div>';
+                status.innerHTML = html;
+                return;
+            }
+
+            html += `<div class="success">✅ authSystem существует</div>`;
+            html += `<pre>Методы: ${Object.keys(authSystem).join(', ')}</pre>`;
+            
+            // Проверяем основные методы
+            const methods = ['login', 'logout', 'isAuthenticated', 'isAdmin', 'getCurrentUser'];
+            methods.forEach(method => {
+                if (typeof authSystem[method] === 'function') {
+                    html += `<div class="success">✅ ${method}() доступен</div>`;
+                } else {
+                    html += `<div class="error">❌ ${method}() недоступен</div>`;
+                }
+            });
+
+            status.innerHTML = html;
+        }
+
+        function createAdminUser() {
+            const status = document.getElementById('userCreationStatus');
+            
+            if (typeof authSystem === 'undefined') {
+                status.innerHTML = '<div class="error">❌ authSystem не загружен</div>';
+                return;
+            }
+
+            // Создаем администратора
+            const adminUser = {
+                id: 1,
+                username: 'admin',
+                email: 'admin@perekuson.ru',
+                password: 'admin123',
+                role: 'admin',
+                createdAt: new Date().toISOString()
+            };
+
+            // Добавляем в систему
+            if (!authSystem.users) authSystem.users = [];
+            
+            // Удаляем старого администратора если есть
+            authSystem.users = authSystem.users.filter(u => u.role !== 'admin');
+            authSystem.users.push(adminUser);
+            
+            // Сохраняем
+            if (typeof authSystem.saveUsers === 'function') {
+                authSystem.saveUsers();
+            } else {
+                localStorage.setItem('users', JSON.stringify(authSystem.users));
+            }
+
+            status.innerHTML = `
+                <div class="success">
+                    ✅ Администратор создан!<br>
+                    Логин: admin@perekuson.ru<br>
+                    Пароль: admin123<br>
+                    Роль: admin
+                </div>
+                <pre>${JSON.stringify(adminUser, null, 2)}</pre>
+            `;
+        }
+
+        function createTestUsers() {
+            const status = document.getElementById('userCreationStatus');
+            
+            if (typeof authSystem === 'undefined') {
+                status.innerHTML = '<div class="error">❌ authSystem не загружен</div>';
+                return;
+            }
+
+            // Создаем тестовых пользователей
+            const testUsers = [
+                {
+                    id: 1,
+                    username: 'admin',
+                    email: 'admin@perekuson.ru',
+                    password: 'admin123',
+                    role: 'admin',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    username: 'user',
+                    email: 'user@example.com',
+                    password: 'password123',
+                    role: 'user',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 3,
+                    username: 'manager',
+                    email: 'manager@perekuson.ru',
+                    password: 'manager123',
+                    role: 'manager',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+
+            authSystem.users = testUsers;
+            
+            if (typeof authSystem.saveUsers === 'function') {
+                authSystem.saveUsers();
+            } else {
+                localStorage.setItem('users', JSON.stringify(authSystem.users));
+            }
+
+            status.innerHTML = `
+                <div class="success">
+                    ✅ Все тестовые пользователи созданы!
+                </div>
+                <pre>${JSON.stringify(testUsers, null, 2)}</pre>
+            `;
+        }
+
+        function forceLoginAsAdmin() {
+            const status = document.getElementById('loginStatus');
+            
+            if (typeof authSystem === 'undefined') {
+                status.innerHTML = '<div class="error">❌ authSystem не загружен</div>';
+                return;
+            }
+
+            // Принудительно входим как администратор
+            const adminUser = {
+                id: 1,
+                username: 'admin',
+                email: 'admin@perekuson.ru',
+                password: 'admin123',
+                role: 'admin',
+                createdAt: new Date().toISOString()
+            };
+
+            authSystem.currentUser = adminUser;
+            localStorage.setItem('currentUser', JSON.stringify(adminUser));
+
+            // Обновляем UI если метод доступен
+            if (typeof authSystem.updateUI === 'function') {
+                authSystem.updateUI();
+            }
+
+            status.innerHTML = `
+                <div class="success">
+                    ✅ Принудительный вход как администратор выполнен!<br>
+                    <button onclick="checkAdminRights()">Проверить права</button>
+                    <button onclick="location.href='index.html'">Перейти на главную</button>
+                </div>
+            `;
+        }
+
+        function forceLoginAsUser() {
+            const status = document.getElementById('loginStatus');
+            
+            if (typeof authSystem === 'undefined') {
+                status.innerHTML = '<div class="error">❌ authSystem не загружен</div>';
+                return;
+            }
+
+            // Принудительно входим как обычный пользователь
+            const regularUser = {
+                id: 2,
+                username: 'user',
+                email: 'user@example.com',
+                password: 'password123',
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            authSystem.currentUser = regularUser;
+            localStorage.setItem('currentUser', JSON.stringify(regularUser));
+
+            if (typeof authSystem.updateUI === 'function') {
+                authSystem.updateUI();
+            }
+
+            status.innerHTML = `
+                <div class="success">
+                    ✅ Принудительный вход как пользователь выполнен!<br>
+                    <button onclick="checkAdminRights()">Проверить права</button>
+                    <button onclick="location.href='index.html'">Перейти на главную</button>
+                </div>
+            `;
+        }
+
+        function checkAdminRights() {
+            const status = document.getElementById('rightsStatus');
+            
+            if (typeof authSystem === 'undefined') {
+                status.innerHTML = '<div class="error">❌ authSystem не загружен</div>';
+                return;
+            }
+
+            let html = '<h3>Проверка прав:</h3>';
+            
+            const currentUser = authSystem.getCurrentUser ? authSystem.getCurrentUser() : authSystem.currentUser;
+            html += `<div>Текущий пользователь: ${JSON.stringify(currentUser)}</div>`;
+            
+            const isAuth = authSystem.isAuthenticated ? authSystem.isAuthenticated() : !!currentUser;
+            html += `<div>Аутентифицирован: ${isAuth ? '✅ Да' : '❌ Нет'}</div>`;
+            
+            const isAdmin = authSystem.isAdmin ? authSystem.isAdmin() : (currentUser && currentUser.role === 'admin');
+            html += `<div>Администратор: ${isAdmin ? '✅ Да' : '❌ Нет'}</div>`;
+
+            status.innerHTML = html;
+        }
+
+        function clearAllData() {
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            if (typeof authSystem !== 'undefined') {
+                authSystem.users = [];
+                authSystem.currentUser = null;
+            }
+
+            document.getElementById('clearStatus').innerHTML = `
+                <div class="warning">
+                    🧹 Все данные очищены!<br>
+                    Перезагрузите страницу.
+                </div>
+            `;
+        }
+
+        function showCurrentState() {
+            const state = document.getElementById('currentState');
+            
+            const data = {
+                localStorage: {
+                    currentUser: localStorage.getItem('currentUser'),
+                    users: localStorage.getItem('users')
+                },
+                authSystem: {
+                    exists: typeof authSystem !== 'undefined',
+                    currentUser: authSystem ? authSystem.currentUser : null,
+                    users: authSystem ? authSystem.users : null,
+                    methods: authSystem ? Object.keys(authSystem) : []
+                }
+            };
+
+            state.textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
