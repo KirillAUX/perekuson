@@ -8,20 +8,33 @@ class AuthSystem {
         this.init();
     }
 
-    init() {
-        if (this.isInitialized) return;
-        
-        try {
-            // Создаем администратора по умолчанию, если его нет
-            this.createDefaultAdmin();
-            this.updateUI();
-            this.setupAutoLogout();
-            this.isInitialized = true;
-            console.log('AuthSystem инициализирован');
-        } catch (error) {
-            console.error('Ошибка инициализации AuthSystem:', error);
-        }
+    // В auth.js проверьте инициализацию пользователей
+init() {
+    this.users = this.loadUsers();
+    if (this.users.length === 0) {
+        // Добавляем тестовых пользователей
+        this.users = [
+            {
+                id: 1,
+                username: 'admin',
+                email: 'admin@perekuson.ru',
+                password: 'admin123', // или тот пароль, который вы используете
+                role: 'admin',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                username: 'user',
+                email: 'user@example.com',
+                password: 'password123',
+                role: 'user',
+                createdAt: new Date().toISOString()
+            }
+        ];
+        this.saveUsers();
     }
+    this.currentUser = this.loadCurrentUser();
+}
 
     // Создание администратора по умолчанию
     createDefaultAdmin() {
@@ -153,54 +166,57 @@ class AuthSystem {
     // Вход пользователя - ВЕРСИЯ БЕЗ ХЕШИРОВАНИЯ
 // Вход пользователя - ИСПРАВЛЕННАЯ ВЕРСИЯ
 login(loginData) {
-    try {
-        console.log('=== DEBUG LOGIN ===');
-        console.log('Входные данные:', loginData);
+    console.log('🔐 === LOGIN PROCESS START ===');
+    console.log('📨 Полученные данные:', loginData);
+    
+    const loginInput = loginData.loginEmail || loginData.email || '';
+    const passwordInput = loginData.loginPassword || loginData.password || '';
+    
+    console.log('🎯 Извлеченные данные:', {
+        логин: loginInput,
+        пароль: passwordInput
+    });
+    
+    console.log('👥 Все пользователи в системе:', this.users);
+    
+    let foundUser = null;
+    
+    for (let user of this.users) {
+        console.log(`\n🔍 Проверяем пользователя:`, user);
+        console.log(`   📧 Email: ${user.email}, Логин: ${user.username}`);
+        console.log(`   🎭 Роль: ${user.role}`);
         
-        // Поддержка разных форматов данных (для совместимости)
-        const loginEmail = loginData.loginEmail || loginData.email;
-        const loginPassword = loginData.loginPassword || loginData.password;
+        const isEmailMatch = user.email === loginInput;
+        const isUsernameMatch = user.username === loginInput;
+        const isPasswordMatch = user.password === passwordInput;
         
-        console.log('Извлеченные данные:', { loginEmail, loginPassword });
-        console.log('Все пользователи:', this.users);
-
-        const user = this.users.find(user => 
-            (user.email === loginEmail || user.username === loginEmail) && 
-            user.password === loginPassword && // БЕЗ ХЕШИРОВАНИЯ
-            user.isActive
-        );
-
-        console.log('Найденный пользователь:', user);
-
-        if (user) {
-            // Обновляем время последнего входа
-            user.lastLogin = new Date().toISOString();
-            this.saveUsers();
-
-            this.currentUser = user;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            this.updateUI();
-            this.resetAutoLogoutTimer();
-
-            // Сохраняем логин для "Запомнить меня"
-            if (loginData.rememberMe) {
-                localStorage.setItem('rememberedEmail', loginEmail);
-            }
-
-            return { 
-                success: true, 
-                message: `Добро пожаловать, ${user.username}!`, 
-                user: user 
-            };
-        } else {
-            return { 
-                success: false, 
-                message: 'Неверный email/имя пользователя или пароль' 
-            };
+        console.log(`   📧 Email совпадает: ${isEmailMatch}`);
+        console.log(`   👤 Username совпадает: ${isUsernameMatch}`);
+        console.log(`   🔑 Пароль совпадает: ${isPasswordMatch}`);
+        
+        if ((isEmailMatch || isUsernameMatch) && isPasswordMatch) {
+            foundUser = user;
+            console.log('✅ ПОЛЬЗОВАТЕЛЬ НАЙДЕН! Роль:', user.role);
+            break;
         }
-    } catch (error) {
-        console.error('Ошибка входа:', error);
-        return { success: false, message: 'Ошибка входа в систему' };
+    }
+    
+    if (foundUser) {
+        console.log('🎉 ВХОД УСПЕШЕН! Пользователь:', foundUser.username, 'Роль:', foundUser.role);
+        this.currentUser = foundUser;
+        localStorage.setItem('currentUser', JSON.stringify(foundUser));
+        this.updateUI();
+        return { 
+            success: true, 
+            message: `Вход успешен! Добро пожаловать, ${foundUser.username}!`, 
+            user: foundUser 
+        };
+    } else {
+        console.log('❌ ВХОД НЕ УДАЛСЯ: Пользователь не найден или неверный пароль');
+        return { 
+            success: false, 
+            message: 'Неверный email/имя пользователя или пароль' 
+        };
     }
 }
     // Выход пользователя
@@ -252,9 +268,22 @@ login(loginData) {
     }
 
     // Проверка является ли пользователь администратором
-    isAdmin() {
-        return this.currentUser && this.currentUser.role === 'admin';
+   // В auth.js добавьте/проверьте метод isAdmin
+isAdmin() {
+    if (!this.currentUser) {
+        console.log('❌ isAdmin: Нет текущего пользователя');
+        return false;
     }
+    
+    const isAdmin = this.currentUser.role === 'admin';
+    console.log('🔧 Проверка прав администратора:', {
+        пользователь: this.currentUser.username,
+        роль: this.currentUser.role,
+        isAdmin: isAdmin
+    });
+    
+    return isAdmin;
+}
 
     // Получение пользователя по ID
     getUserById(userId) {
@@ -417,78 +446,28 @@ login(loginData) {
 
     // Обновление интерфейса
     updateUI() {
-        const profileBtn = document.getElementById('profileBtn');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        const statusElement = document.getElementById('status');
-        const authStatus = document.querySelector('.auth-status');
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
-
-        if (this.currentUser && profileBtn) {
-            // Пользователь авторизован
-            const guestMenu = dropdownMenu?.querySelector('.menu-guest');
-            const userMenu = dropdownMenu?.querySelector('.menu-user');
-            
-            if (guestMenu) guestMenu.style.display = 'none';
-            if (userMenu) userMenu.style.display = 'block';
-            
-            profileBtn.textContent = this.currentUser.username.substring(0, 2).toUpperCase();
-            profileBtn.classList.add('authenticated');
-            
-            if (statusElement) {
-                let statusText = `Авторизован как ${this.currentUser.username}`;
-                if (this.isAdmin()) {
-                    statusText += ' (Администратор)';
-                    statusElement.style.color = '#dc3545';
-                } else {
-                    statusElement.style.color = '#28a745';
-                }
-                statusElement.textContent = statusText;
-                statusElement.classList.add('authenticated');
-            }
-            
-            if (authStatus) {
-                authStatus.classList.add('authenticated');
-                if (this.isAdmin()) {
-                    authStatus.style.borderLeftColor = '#dc3545';
-                    authStatus.style.background = 'linear-gradient(135deg, #f8f9fa, #ffe6e6)';
-                } else {
-                    authStatus.style.borderLeftColor = '#28a745';
-                }
-            }
-
-            // Показываем кнопку админ-панели для администраторов
-            if (adminPanelBtn && this.isAdmin()) {
-                adminPanelBtn.style.display = 'inline-block';
-            }
-        } else if (profileBtn) {
-            // Пользователь не авторизован
-            const guestMenu = dropdownMenu?.querySelector('.menu-guest');
-            const userMenu = dropdownMenu?.querySelector('.menu-user');
-            
-            if (guestMenu) guestMenu.style.display = 'block';
-            if (userMenu) userMenu.style.display = 'none';
-            
-            profileBtn.textContent = '👤';
-            profileBtn.classList.remove('authenticated');
-            
-            if (statusElement) {
-                statusElement.textContent = 'Не авторизован';
-                statusElement.classList.remove('authenticated');
-                statusElement.style.color = '#6c757d';
-            }
-            
-            if (authStatus) {
-                authStatus.classList.remove('authenticated');
-                authStatus.style.borderLeftColor = '#6c757d';
-                authStatus.style.background = '';
-            }
-
-            // Скрываем кнопку админ-панели
-            if (adminPanelBtn) {
-                adminPanelBtn.style.display = 'none';
-            }
-        }
+    console.log('🔄 ОБНОВЛЕНИЕ ИНТЕРФЕЙСА');
+    console.log('Текущий пользователь:', this.currentUser);
+    
+    const isAuthenticated = this.isAuthenticated();
+    const isAdminUser = this.isAdmin();
+    
+    console.log('🔐 Аутентифицирован:', isAuthenticated);
+    console.log('👑 Администратор:', isAdminUser);
+    
+    // Обновляем навигацию
+    this.updateNavigation();
+    
+    // Показываем/скрываем админ-панель
+    const adminPanelBtn = document.getElementById('adminPanelBtn');
+    if (adminPanelBtn) {
+        adminPanelBtn.style.display = isAdminUser ? 'block' : 'none';
+        console.log('👨‍💼 Кнопка админа:', isAdminUser ? 'видна' : 'скрыта');
     }
+    
+    // Обновляем приветствие
+    this.updateUserGreeting();
+}
 
     // Получение текущего пользователя
     getCurrentUser() {
@@ -593,4 +572,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
 
