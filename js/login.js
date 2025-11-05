@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // ПРАВИЛЬНЫЙ способ получения данных - используем элементы формы по name
         const formData = {
-            loginEmail: document.getElementById('loginEmail').value.trim(),
-            loginPassword: document.getElementById('loginPassword').value
+            loginEmail: this.elements['loginEmail'].value.trim(),
+            loginPassword: this.elements['loginPassword'].value
         };
+        
+        console.log('Данные для входа:', formData);
         
         const result = authSystem.login(formData);
         
