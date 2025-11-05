@@ -1,162 +1,110 @@
-// auth.js - ПРОСТАЯ И РАБОЧАЯ ВЕРСИЯ
-class AuthSystem {
-    constructor() {
-        this.users = [];
-        this.currentUser = null;
-        this.init();
-    }
+// auth.js - УЛЬТРА-ПРОСТАЯ ВЕРСИЯ
+console.log('🔧 Загрузка auth.js...');
 
-    init() {
-        console.log('🔄 Инициализация AuthSystem...');
+// Простой объект без классов
+window.authSystem = {
+    users: [],
+    currentUser: null,
+
+    init: function() {
+        console.log('🔄 Инициализация authSystem...');
         
         // Загружаем пользователей
-        this.loadUsers();
+        const savedUsers = localStorage.getItem('users');
+        this.users = savedUsers ? JSON.parse(savedUsers) : [];
         
         // Если пользователей нет - создаем тестовых
         if (this.users.length === 0) {
-            this.createDefaultUsers();
+            console.log('👥 Создаем тестовых пользователей...');
+            this.users = [
+                {
+                    id: 1,
+                    username: 'admin',
+                    email: 'admin@perekuson.ru',
+                    password: 'admin123',
+                    role: 'admin'
+                },
+                {
+                    id: 2, 
+                    username: 'user',
+                    email: 'user@example.com',
+                    password: 'password123',
+                    role: 'user'
+                }
+            ];
+            localStorage.setItem('users', JSON.stringify(this.users));
         }
         
         // Загружаем текущего пользователя
-        this.loadCurrentUser();
+        const savedUser = localStorage.getItem('currentUser');
+        this.currentUser = savedUser ? JSON.parse(savedUser) : null;
         
-        console.log('✅ AuthSystem готов. Пользователей:', this.users.length);
+        console.log('✅ authSystem готов!');
+        console.log('👥 Пользователи:', this.users);
         console.log('👤 Текущий пользователь:', this.currentUser);
-    }
+    },
 
-    createDefaultUsers() {
-        console.log('👥 Создаем тестовых пользователей...');
+    login: function(loginData) {
+        console.log('🔐 Вход с данными:', loginData);
         
-        this.users = [
-            {
-                id: 1,
-                username: 'admin',
-                email: 'admin@perekuson.ru',
-                password: 'admin123', // Пароль в открытом виде
-                role: 'admin',
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 2,
-                username: 'user',
-                email: 'user@example.com', 
-                password: 'password123', // Пароль в открытом виде
-                role: 'user',
-                createdAt: new Date().toISOString()
-            }
-        ];
+        const login = loginData.loginEmail || loginData.email;
+        const password = loginData.loginPassword || loginData.password;
         
-        this.saveUsers();
-    }
-
-    login(loginData) {
-        console.log('🔐 Попытка входа:', loginData);
-        
-        const login = (loginData.loginEmail || loginData.email || '').trim();
-        const password = loginData.loginPassword || loginData.password || '';
+        console.log('🔍 Ищем пользователя:', login);
         
         // Ищем пользователя
-        const user = this.users.find(u => 
-            (u.email === login || u.username === login) && 
-            u.password === password // Прямое сравнение пароля
-        );
+        const user = this.users.find(u => {
+            const loginMatch = u.email === login || u.username === login;
+            const passwordMatch = u.password === password;
+            console.log(`Проверка ${u.username}: login=${loginMatch}, password=${passwordMatch}`);
+            return loginMatch && passwordMatch;
+        });
         
         if (user) {
-            console.log('✅ Вход успешен! Пользователь:', user.username, 'Роль:', user.role);
-            
+            console.log('✅ ПОЛЬЗОВАТЕЛЬ НАЙДЕН!', user);
             this.currentUser = user;
-            this.saveCurrentUser();
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            
+            // Сразу обновляем UI
             this.updateUI();
             
             return {
                 success: true,
-                message: `Добро пожаловать, ${user.username}!`,
+                message: 'Вход успешен!',
                 user: user
             };
         } else {
-            console.log('❌ Ошибка входа: неверные данные');
+            console.log('❌ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН');
             return {
-                success: false,
-                message: 'Неверный email/логин или пароль'
+                success: false, 
+                message: 'Неверные данные'
             };
         }
-    }
+    },
 
-    logout() {
-        console.log('🚪 Выход из системы');
-        this.currentUser = null;
-        localStorage.removeItem('currentUser');
-        this.updateUI();
-        
-        return {
-            success: true,
-            message: 'Вы вышли из системы'
-        };
-    }
-
-    register(userData) {
-        console.log('📝 Регистрация:', userData);
-        
-        // Проверяем, нет ли пользователя с таким email или username
-        const existingUser = this.users.find(u => 
-            u.email === userData.email || u.username === userData.username
-        );
-        
-        if (existingUser) {
-            return {
-                success: false,
-                message: 'Пользователь с таким email или логином уже существует'
-            };
-        }
-        
-        // Создаем нового пользователя
-        const newUser = {
-            id: Date.now(),
-            username: userData.username,
-            email: userData.email,
-            password: userData.password, // Пароль в открытом виде
-            role: 'user',
-            createdAt: new Date().toISOString()
-        };
-        
-        this.users.push(newUser);
-        this.saveUsers();
-        
-        console.log('✅ Новый пользователь создан:', newUser.username);
-        
-        return {
-            success: true,
-            message: 'Регистрация успешна! Теперь войдите в систему.',
-            user: newUser
-        };
-    }
-
-    isAuthenticated() {
+    isAuthenticated: function() {
         return this.currentUser !== null;
-    }
+    },
 
-    isAdmin() {
+    isAdmin: function() {
         if (!this.currentUser) {
-            console.log('❌ isAdmin: нет текущего пользователя');
+            console.log('❌ isAdmin: нет пользователя');
             return false;
         }
         
         const isAdmin = this.currentUser.role === 'admin';
-        console.log('🔧 Проверка прав:', {
+        console.log('🔧 isAdmin проверка:', {
             пользователь: this.currentUser.username,
             роль: this.currentUser.role,
-            isAdmin: isAdmin
+            результат: isAdmin
         });
         
         return isAdmin;
-    }
+    },
 
-    getCurrentUser() {
-        return this.currentUser;
-    }
-
-    updateUI() {
-        console.log('🎨 Обновление интерфейса...');
+    updateUI: function() {
+        console.log('🎨 ОБНОВЛЕНИЕ ИНТЕРФЕЙСА');
+        console.log('Текущий пользователь:', this.currentUser);
         
         const isAuth = this.isAuthenticated();
         const isAdmin = this.isAdmin();
@@ -171,36 +119,41 @@ class AuthSystem {
         
         // Обновляем приветствие
         this.updateUserGreeting();
-    }
+    },
 
-    updateNavigation() {
+    updateNavigation: function() {
         const guestMenu = document.querySelector('.menu-guest');
         const userMenu = document.querySelector('.menu-user');
         
-        if (guestMenu) guestMenu.style.display = this.currentUser ? 'none' : 'block';
-        if (userMenu) userMenu.style.display = this.currentUser ? 'block' : 'none';
-        
-        console.log('🧭 Навигация обновлена');
-    }
+        if (this.currentUser) {
+            if (guestMenu) guestMenu.style.display = 'none';
+            if (userMenu) userMenu.style.display = 'block';
+        } else {
+            if (guestMenu) guestMenu.style.display = 'block';
+            if (userMenu) userMenu.style.display = 'none';
+        }
+    },
 
-    updateAdminPanel() {
+    updateAdminPanel: function() {
         const adminBtn = document.getElementById('adminPanelBtn');
         const adminPanel = document.getElementById('adminPanel');
         
         const isAdmin = this.isAdmin();
         
+        console.log('🔘 Обновление админ-панели:', { isAdmin, adminBtn, adminPanel });
+        
         if (adminBtn) {
             adminBtn.style.display = isAdmin ? 'block' : 'none';
-            console.log('🔘 Кнопка админа:', isAdmin ? 'показана' : 'скрыта');
+            console.log('Кнопка админа установлена в:', adminBtn.style.display);
         }
         
         if (adminPanel) {
             adminPanel.style.display = isAdmin ? 'block' : 'none';
-            console.log('📊 Панель админа:', isAdmin ? 'показана' : 'скрыта');
+            console.log('Панель админа установлена в:', adminPanel.style.display);
         }
-    }
+    },
 
-    updateUserGreeting() {
+    updateUserGreeting: function() {
         const statusElement = document.getElementById('status');
         const greetingElement = document.getElementById('userGreeting');
         const userNameElement = document.getElementById('userName');
@@ -213,74 +166,15 @@ class AuthSystem {
             if (statusElement) statusElement.textContent = 'Не авторизован';
             if (greetingElement) greetingElement.style.display = 'none';
         }
-    }
+    },
 
-    // Вспомогательные методы для работы с localStorage
-    loadUsers() {
-        try {
-            const usersJson = localStorage.getItem('users');
-            this.users = usersJson ? JSON.parse(usersJson) : [];
-            console.log('📁 Загружено пользователей:', this.users.length);
-        } catch (error) {
-            console.error('❌ Ошибка загрузки пользователей:', error);
-            this.users = [];
-        }
+    logout: function() {
+        console.log('🚪 Выход из системы');
+        this.currentUser = null;
+        localStorage.removeItem('currentUser');
+        this.updateUI();
     }
+};
 
-    saveUsers() {
-        try {
-            localStorage.setItem('users', JSON.stringify(this.users));
-            console.log('💾 Пользователи сохранены');
-        } catch (error) {
-            console.error('❌ Ошибка сохранения пользователей:', error);
-        }
-    }
-
-    loadCurrentUser() {
-        try {
-            const userJson = localStorage.getItem('currentUser');
-            this.currentUser = userJson ? JSON.parse(userJson) : null;
-            console.log('👤 Загружен текущий пользователь:', this.currentUser?.username);
-        } catch (error) {
-            console.error('❌ Ошибка загрузки текущего пользователя:', error);
-            this.currentUser = null;
-        }
-    }
-
-    saveCurrentUser() {
-        try {
-            if (this.currentUser) {
-                localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-                console.log('💾 Текущий пользователь сохранен');
-            }
-        } catch (error) {
-            console.error('❌ Ошибка сохранения текущего пользователя:', error);
-        }
-    }
-
-    // Методы для отладки
-    debugShowUsers() {
-        console.log('👥 Все пользователи:', this.users);
-    }
-    
-    debugShowCurrentUser() {
-        console.log('👤 Текущий пользователь:', this.currentUser);
-    }
-    
-    debugForceAdminLogin() {
-        console.log('🔧 Принудительный вход как администратор...');
-        
-        const adminUser = this.users.find(u => u.role === 'admin');
-        if (adminUser) {
-            this.currentUser = adminUser;
-            this.saveCurrentUser();
-            this.updateUI();
-            console.log('✅ Вошли как:', adminUser.username);
-        } else {
-            console.log('❌ Администратор не найден');
-        }
-    }
-}
-
-// Создаем глобальный экземпляр
-const authSystem = new AuthSystem();
+// Инициализируем сразу
+authSystem.init();
