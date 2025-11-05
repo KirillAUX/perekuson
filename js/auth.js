@@ -150,45 +150,51 @@ class AuthSystem {
     }
 
     // Вход пользователя
-    login(loginData) {
-        try {
-            const user = this.users.find(user => 
-                (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
-                user.password === this.hashPassword(loginData.loginPassword) &&
-                user.isActive
-            );
+    // Вход пользователя - ВЕРСИЯ БЕЗ ХЕШИРОВАНИЯ
+login(loginData) {
+    try {
+        console.log('=== DEBUG LOGIN ===');
+        console.log('Введенные данные:', loginData);
+        
+        const user = this.users.find(user => 
+            (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
+            user.password === loginData.loginPassword && // БЕЗ ХЕШИРОВАНИЯ
+            user.isActive
+        );
 
-            if (user) {
-                // Обновляем время последнего входа
-                user.lastLogin = new Date().toISOString();
-                this.saveUsers();
+        console.log('Найденный пользователь:', user);
 
-                this.currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.updateUI();
-                this.resetAutoLogoutTimer();
+        if (user) {
+            // Обновляем время последнего входа
+            user.lastLogin = new Date().toISOString();
+            this.saveUsers();
 
-                // Сохраняем логин для "Запомнить меня"
-                if (loginData.rememberMe) {
-                    localStorage.setItem('rememberedEmail', loginData.loginEmail);
-                }
+            this.currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.updateUI();
+            this.resetAutoLogoutTimer();
 
-                return { 
-                    success: true, 
-                    message: `Добро пожаловать, ${user.username}!`, 
-                    user: user 
-                };
-            } else {
-                return { 
-                    success: false, 
-                    message: 'Неверный email/имя пользователя или пароль' 
-                };
+            // Сохраняем логин для "Запомнить меня"
+            if (loginData.rememberMe) {
+                localStorage.setItem('rememberedEmail', loginData.loginEmail);
             }
-        } catch (error) {
-            console.error('Ошибка входа:', error);
-            return { success: false, message: 'Ошибка входа в систему' };
+
+            return { 
+                success: true, 
+                message: `Добро пожаловать, ${user.username}!`, 
+                user: user 
+            };
+        } else {
+            return { 
+                success: false, 
+                message: 'Неверный email/имя пользователя или пароль' 
+            };
         }
+    } catch (error) {
+        console.error('Ошибка входа:', error);
+        return { success: false, message: 'Ошибка входа в систему' };
     }
+}
 
     // Выход пользователя
     logout() {
@@ -578,4 +584,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('loginEmail').value = rememberedEmail;
         document.getElementById('rememberMe').checked = true;
     }
+
 });
