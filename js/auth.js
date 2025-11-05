@@ -151,14 +151,22 @@ class AuthSystem {
 
     // Вход пользователя
     // Вход пользователя - ВЕРСИЯ БЕЗ ХЕШИРОВАНИЯ
+// Вход пользователя - ИСПРАВЛЕННАЯ ВЕРСИЯ
 login(loginData) {
     try {
         console.log('=== DEBUG LOGIN ===');
-        console.log('Введенные данные:', loginData);
+        console.log('Входные данные:', loginData);
         
+        // Поддержка разных форматов данных (для совместимости)
+        const loginEmail = loginData.loginEmail || loginData.email;
+        const loginPassword = loginData.loginPassword || loginData.password;
+        
+        console.log('Извлеченные данные:', { loginEmail, loginPassword });
+        console.log('Все пользователи:', this.users);
+
         const user = this.users.find(user => 
-            (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
-            user.password === loginData.loginPassword && // БЕЗ ХЕШИРОВАНИЯ
+            (user.email === loginEmail || user.username === loginEmail) && 
+            user.password === loginPassword && // БЕЗ ХЕШИРОВАНИЯ
             user.isActive
         );
 
@@ -176,7 +184,7 @@ login(loginData) {
 
             // Сохраняем логин для "Запомнить меня"
             if (loginData.rememberMe) {
-                localStorage.setItem('rememberedEmail', loginData.loginEmail);
+                localStorage.setItem('rememberedEmail', loginEmail);
             }
 
             return { 
@@ -195,7 +203,6 @@ login(loginData) {
         return { success: false, message: 'Ошибка входа в систему' };
     }
 }
-
     // Выход пользователя
     logout() {
         try {
@@ -586,3 +593,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
