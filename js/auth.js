@@ -62,21 +62,27 @@ class AuthSystem {
     }
 
     // Вход пользователя
-    login(loginData) {
-        const user = this.users.find(user => 
-            (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
-            user.password === loginData.loginPassword
-        );
+    // Вход пользователя
+login(loginData) {
+    console.log('=== LOGIN DEBUG ===');
+    console.log('Login data:', loginData);
+    
+    const user = this.users.find(user => 
+        (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
+        user.password === loginData.loginPassword
+    );
 
-        if (user) {
-            this.currentUser = user;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            this.updateUI();
-            return { success: true, message: 'Вход успешен!', user: user };
-        } else {
-            return { success: false, message: 'Неверный email/имя пользователя или пароль' };
-        }
+    console.log('Found user:', user);
+
+    if (user) {
+        this.currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.updateUI();
+        return { success: true, message: 'Вход успешен!', user: user };
+    } else {
+        return { success: false, message: 'Неверный email/имя пользователя или пароль' };
     }
+}
 
     // Выход пользователя
     logout() {
@@ -253,4 +259,5 @@ function toggleAdminPanel() {
     if (adminPanel) {
         adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
     }
+
 }
