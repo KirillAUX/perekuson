@@ -1,4 +1,4 @@
-// Менеджер для страницы входа
+// login.js - УПРОЩЕННАЯ ВЕРСИЯ
 class LoginManager {
     constructor() {
         this.isInitialized = false;
@@ -14,9 +14,9 @@ class LoginManager {
             this.setupPasswordToggle();
             this.setupAutoFocus();
             this.isInitialized = true;
-            console.log('LoginManager инициализирован');
+            console.log('✅ LoginManager инициализирован');
         } catch (error) {
-            console.error('Ошибка инициализации LoginManager:', error);
+            console.error('❌ Ошибка инициализации LoginManager:', error);
             this.showMessage('Ошибка загрузки формы входа', 'error');
         }
     }
@@ -24,27 +24,17 @@ class LoginManager {
     setupEventListeners() {
         const loginForm = document.getElementById('loginForm');
         if (!loginForm) {
-            console.error('Форма входа не найдена');
+            console.error('❌ Форма входа не найдена');
             return;
         }
 
-        // Обработка отправки формы
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleLogin();
         });
 
-        // Валидация в реальном времени
+        // Простая валидация в реальном времени
         this.setupRealTimeValidation();
-
-        // Обработка клавиши Enter
-        this.setupEnterKeyHandler();
-
-        // Обработка "Запомнить меня"
-        this.setupRememberMeHandler();
-
-        // Обработка "Забыли пароль?"
-        this.setupForgotPasswordHandler();
     }
 
     setupRealTimeValidation() {
@@ -52,13 +42,13 @@ class LoginManager {
         const passwordInput = document.getElementById('loginPassword');
 
         if (emailInput) {
-            emailInput.addEventListener('input', () => {
+            emailInput.addEventListener('blur', () => {
                 this.validateEmailField(emailInput);
             });
         }
 
         if (passwordInput) {
-            passwordInput.addEventListener('input', () => {
+            passwordInput.addEventListener('blur', () => {
                 this.validatePasswordField(passwordInput);
             });
         }
@@ -66,36 +56,28 @@ class LoginManager {
 
     validateEmailField(input) {
         const value = input.value.trim();
-        const errorElement = this.getErrorElement(input);
-
         if (!value) {
             this.showFieldError(input, 'Email обязателен для заполнения');
             return false;
         }
-
         if (!this.isValidEmail(value)) {
             this.showFieldError(input, 'Введите корректный email адрес');
             return false;
         }
-
         this.clearFieldError(input);
         return true;
     }
 
     validatePasswordField(input) {
         const value = input.value;
-        const errorElement = this.getErrorElement(input);
-
         if (!value) {
             this.showFieldError(input, 'Пароль обязателен для заполнения');
             return false;
         }
-
         if (value.length < 6) {
             this.showFieldError(input, 'Пароль должен содержать минимум 6 символов');
             return false;
         }
-
         this.clearFieldError(input);
         return true;
     }
@@ -129,53 +111,11 @@ class LoginManager {
         }
     }
 
-    getErrorElement(input) {
-        return input.parentNode.querySelector('.field-error');
-    }
-
-    setupEnterKeyHandler() {
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                const focused = document.activeElement;
-                if (focused && focused.form && focused.form.id === 'loginForm') {
-                    e.preventDefault();
-                    this.handleLogin();
-                }
-            }
-        });
-    }
-
-    setupRememberMeHandler() {
-        const rememberCheckbox = document.getElementById('rememberMe');
-        const emailInput = document.getElementById('loginEmail');
-
-        if (rememberCheckbox && emailInput) {
-            rememberCheckbox.addEventListener('change', () => {
-                if (rememberCheckbox.checked && emailInput.value.trim()) {
-                    localStorage.setItem('rememberMe', emailInput.value.trim());
-                } else {
-                    localStorage.removeItem('rememberMe');
-                }
-            });
-        }
-    }
-
-    setupForgotPasswordHandler() {
-        const forgotPasswordLink = document.querySelector('.forgot-password');
-        if (forgotPasswordLink) {
-            forgotPasswordLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.handleForgotPassword();
-            });
-        }
-    }
-
     setupPasswordToggle() {
         const passwordInput = document.getElementById('loginPassword');
-        const toggleButton = document.createElement('button');
-        
         if (!passwordInput) return;
 
+        const toggleButton = document.createElement('button');
         toggleButton.type = 'button';
         toggleButton.innerHTML = '👁️';
         toggleButton.className = 'password-toggle';
@@ -203,12 +143,9 @@ class LoginManager {
     }
 
     setupAutoFocus() {
-        // Автофокус на поле email если оно пустое
         const emailInput = document.getElementById('loginEmail');
         if (emailInput && !emailInput.value.trim()) {
-            setTimeout(() => {
-                emailInput.focus();
-            }, 100);
+            setTimeout(() => emailInput.focus(), 100);
         }
     }
 
@@ -221,14 +158,6 @@ class LoginManager {
             emailInput.value = rememberedEmail;
             if (rememberCheckbox) {
                 rememberCheckbox.checked = true;
-            }
-            
-            // Автофокус на пароль если email уже заполнен
-            const passwordInput = document.getElementById('loginPassword');
-            if (passwordInput) {
-                setTimeout(() => {
-                    passwordInput.focus();
-                }, 100);
             }
         }
     }
@@ -243,30 +172,29 @@ class LoginManager {
         this.setFormLoading(true);
 
         try {
-            // Имитация задержки сети для лучшего UX
-            await this.simulateNetworkDelay();
+            // Минимальная задержка для UX
+            await new Promise(resolve => setTimeout(resolve, 500));
 
+            // ПРОСТОЙ ВХОД БЕЗ ХЕШИРОВАНИЯ
             const result = authSystem.login({
                 loginEmail: formData.email,
-                loginPassword: formData.password,
-                rememberMe: formData.rememberMe
+                loginPassword: formData.password
             });
 
             if (result.success) {
                 this.showMessage(result.message, 'success');
-                this.logLoginSuccess(formData.email);
+                console.log('🎉 Успешный вход! Пользователь:', result.user);
                 
                 // Перенаправление после успешного входа
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 1500);
+                }, 1000);
             } else {
                 this.showMessage(result.message, 'error');
-                this.logLoginFailed(formData.email);
                 this.handleFailedLogin();
             }
         } catch (error) {
-            console.error('Ошибка при входе:', error);
+            console.error('❌ Ошибка при входе:', error);
             this.showMessage('Произошла ошибка при входе', 'error');
         } finally {
             this.setFormLoading(false);
@@ -284,21 +212,11 @@ class LoginManager {
     validateForm(formData) {
         let isValid = true;
 
-        // Валидация email
-        if (!formData.email) {
-            this.showFieldError(document.getElementById('loginEmail'), 'Email обязателен для заполнения');
-            isValid = false;
-        } else if (!this.isValidEmail(formData.email)) {
-            this.showFieldError(document.getElementById('loginEmail'), 'Введите корректный email адрес');
+        if (!this.validateEmailField(document.getElementById('loginEmail'))) {
             isValid = false;
         }
 
-        // Валидация пароля
-        if (!formData.password) {
-            this.showFieldError(document.getElementById('loginPassword'), 'Пароль обязателен для заполнения');
-            isValid = false;
-        } else if (formData.password.length < 6) {
-            this.showFieldError(document.getElementById('loginPassword'), 'Пароль должен содержать минимум 6 символов');
+        if (!this.validatePasswordField(document.getElementById('loginPassword'))) {
             isValid = false;
         }
 
@@ -310,43 +228,17 @@ class LoginManager {
     }
 
     handleFailedLogin() {
-        // Добавляем вибрацию для неправильного ввода (только на поддерживаемых устройствах)
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-
-        // Добавляем класс ошибки к форме
+        // Простая анимация ошибки
         const form = document.getElementById('loginForm');
         form.classList.add('shake');
-        
-        setTimeout(() => {
-            form.classList.remove('shake');
-        }, 500);
+        setTimeout(() => form.classList.remove('shake'), 500);
 
-        // Фокус на поле пароля для повторного ввода
+        // Фокус на поле пароля
         const passwordInput = document.getElementById('loginPassword');
         if (passwordInput) {
             passwordInput.focus();
             passwordInput.select();
         }
-    }
-
-    handleForgotPassword() {
-        const email = document.getElementById('loginEmail').value.trim();
-        let emailToRecover = email;
-
-        if (!emailToRecover || !this.isValidEmail(emailToRecover)) {
-            emailToRecover = prompt('Введите ваш email для восстановления пароля:');
-            
-            if (!emailToRecover || !this.isValidEmail(emailToRecover)) {
-                this.showMessage('Введите корректный email адрес', 'error');
-                return;
-            }
-        }
-
-        // В реальном приложении здесь был бы запрос к API
-        this.showMessage(`Инструкции по восстановлению пароля отправлены на ${emailToRecover}`, 'info');
-        console.log('Запрос на восстановление пароля для:', emailToRecover);
     }
 
     setFormLoading(isLoading) {
@@ -355,69 +247,40 @@ class LoginManager {
         const inputs = form.querySelectorAll('input, button');
 
         if (isLoading) {
-            // Сохраняем оригинальный текст кнопки
-            if (submitButton && !submitButton.dataset.originalText) {
-                submitButton.dataset.originalText = submitButton.textContent;
-            }
-
-            // Показываем индикатор загрузки
             if (submitButton) {
-                submitButton.innerHTML = '<div class="loading-spinner"></div> Вход...';
                 submitButton.disabled = true;
+                submitButton.textContent = 'Вход...';
             }
-
-            // Блокируем все поля ввода
             inputs.forEach(input => {
-                input.disabled = true;
+                if (input !== submitButton) input.disabled = true;
             });
-
-            form.classList.add('loading');
         } else {
-            // Восстанавливаем форму
-            if (submitButton && submitButton.dataset.originalText) {
-                submitButton.textContent = submitButton.dataset.originalText;
+            if (submitButton) {
                 submitButton.disabled = false;
+                submitButton.textContent = 'Войти';
             }
-
             inputs.forEach(input => {
                 input.disabled = false;
             });
-
-            form.classList.remove('loading');
         }
-    }
-
-    async simulateNetworkDelay() {
-        // Имитация задержки сети для реалистичности
-        const delay = Math.random() * 1000 + 500; // 500-1500ms
-        return new Promise(resolve => setTimeout(resolve, delay));
-    }
-
-    logLoginSuccess(email) {
-        console.log(`Успешный вход: ${email}`);
-        // В реальном приложении здесь может быть отправка в analytics
-    }
-
-    logLoginFailed(email) {
-        console.warn(`Неудачная попытка входа: ${email}`);
-        // В реальном приложении здесь может быть логирование для безопасности
     }
 
     showMessage(message, type = 'success') {
-        if (typeof showMessage === 'function') {
-            showMessage(message, type);
+        // Простой показ сообщений
+        const messageElement = document.getElementById('message');
+        if (messageElement) {
+            messageElement.textContent = message;
+            messageElement.className = `message ${type}`;
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 5000);
         } else {
-            // Fallback
-            const alertType = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '✅';
-            alert(`${alertType} ${message}`);
+            alert(message);
         }
     }
 }
 
-// Создаем глобальный экземпляр менеджера входа
+// Создаем глобальный экземпляр
 const loginManager = new LoginManager();
-
-// Глобальные функции для обратной совместимости
-function handleLogin() {
-    loginManager.handleLogin();
-}
