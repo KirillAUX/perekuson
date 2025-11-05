@@ -151,12 +151,12 @@ class AuthSystem {
 
     // Вход пользователя
     login(loginData) {
-        try {
-            const user = this.users.find(user => 
-                (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
-                user.password === this.hashPassword(loginData.loginPassword) &&
-                user.isActive
-            );
+    try {
+        const user = this.users.find(user => 
+            (user.email === loginData.loginEmail || user.username === loginData.loginEmail) && 
+            user.password === this.hashPassword(loginData.loginPassword) &&
+            user.isActive
+        );
 
             if (user) {
                 // Обновляем время последнего входа
@@ -578,4 +578,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('loginEmail').value = rememberedEmail;
         document.getElementById('rememberMe').checked = true;
     }
+
 });
