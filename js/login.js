@@ -280,7 +280,7 @@ class LoginManager {
             rememberMe: document.getElementById('rememberMe').checked
         };
     }
-
+/*
     validateForm(formData) {
         let isValid = true;
 
@@ -308,7 +308,7 @@ class LoginManager {
 
         return isValid;
     }
-
+*/
     handleFailedLogin() {
         // Добавляем вибрацию для неправильного ввода (только на поддерживаемых устройствах)
         if (navigator.vibrate) {
@@ -420,4 +420,5 @@ const loginManager = new LoginManager();
 // Глобальные функции для обратной совместимости
 function handleLogin() {
     loginManager.handleLogin();
+
 }
