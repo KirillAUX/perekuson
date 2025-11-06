@@ -280,6 +280,9 @@ class LoginManager {
             rememberMe: document.getElementById('rememberMe').checked
         };
     }
+    validateForm(formDate){
+        return true
+    }
     handleFailedLogin() {
         // Добавляем вибрацию для неправильного ввода (только на поддерживаемых устройствах)
         if (navigator.vibrate) {
@@ -393,4 +396,5 @@ function handleLogin() {
     loginManager.handleLogin();
 
 }
+
 
