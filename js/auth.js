@@ -31,7 +31,7 @@ class AuthSystem {
                 id: this.generateId(),
                 username: 'admin',
                 email: 'admin@perekuson.ru',
-                password: this.hashPassword('admin123'), // Хэшируем пароль
+                password: 'admin123', // Хэшируем пароль
                 role: 'admin',
                 createdAt: new Date().toISOString(),
                 phone: '+7 (999) 000-00-00',
@@ -51,8 +51,9 @@ class AuthSystem {
     }
 
     // Простое хэширование пароля (в реальном приложении используйте bcrypt)
-   hashPassword(password) {
-    return password; // Временно возвращает исходный пароль
+hashPassword(password) {
+    console.log('Хэшируем пароль:', password);
+    return password;
 }
 
     // Валидация email
@@ -573,4 +574,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
 
