@@ -280,35 +280,6 @@ class LoginManager {
             rememberMe: document.getElementById('rememberMe').checked
         };
     }
-/*
-    validateForm(formData) {
-        let isValid = true;
-
-        // Валидация email
-        if (!formData.email) {
-            this.showFieldError(document.getElementById('loginEmail'), 'Email обязателен для заполнения');
-            isValid = false;
-        } else if (!this.isValidEmail(formData.email)) {
-            this.showFieldError(document.getElementById('loginEmail'), 'Введите корректный email адрес');
-            isValid = false;
-        }
-
-        // Валидация пароля
-        if (!formData.password) {
-            this.showFieldError(document.getElementById('loginPassword'), 'Пароль обязателен для заполнения');
-            isValid = false;
-        } else if (formData.password.length < 6) {
-            this.showFieldError(document.getElementById('loginPassword'), 'Пароль должен содержать минимум 6 символов');
-            isValid = false;
-        }
-
-        if (!isValid) {
-            this.showMessage('Исправьте ошибки в форме', 'error');
-        }
-
-        return isValid;
-    }
-*/
     handleFailedLogin() {
         // Добавляем вибрацию для неправильного ввода (только на поддерживаемых устройствах)
         if (navigator.vibrate) {
@@ -422,3 +393,4 @@ function handleLogin() {
     loginManager.handleLogin();
 
 }
+
