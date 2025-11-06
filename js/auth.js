@@ -51,16 +51,9 @@ class AuthSystem {
     }
 
     // Простое хэширование пароля (в реальном приложении используйте bcrypt)
-    hashPassword(password) {
-        // Это базовая имитация хэширования - в продакшене используйте надежные методы
-        let hash = 0;
-        for (let i = 0; i < password.length; i++) {
-            const char = password.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return hash.toString();
-    }
+   hashPassword(password) {
+    return password; // Временно возвращает исходный пароль
+}
 
     // Валидация email
     validateEmail(email) {
@@ -580,3 +573,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
