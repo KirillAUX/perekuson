@@ -211,6 +211,7 @@ main {
     margin: 20px 0;
     text-align: center;
     border-left: 4px solid #dc3545;
+	color: red;
 }
 
 .auth-status.authenticated {
@@ -1778,4 +1779,5 @@ input.error {
     .action-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
 }
