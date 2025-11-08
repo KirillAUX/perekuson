@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню - Перекусон</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="head">
+            <img class="img1" src="icon.png" alt="Иконка Перекусон" loading="lazy">
+            <span>Перекусон</span>
+        </div>
+        <div class="profile-dropdown">
+            <button class="profile-btn initials-btn" id="profileBtn">👤</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <!-- Меню для НЕавторизованного пользователя -->
+                <div class="menu-guest">
+                    <a href="login.html" class="nav-link">Вход</a>
+                    <a href="register.html" class="nav-link">Регистрация</a>
+                </div>
+                <!-- Меню для авторизованного пользователя (изначально скрыто) -->
+                <div class="menu-user" style="display: none;">
+                    <a href="profile.html" class="nav-link">Мой профиль</a>
+                    <a href="settings.html" class="nav-link">Настройки</a>
+                    <a href="#" class="da nav-link" onclick="logout()">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <a href="index.html" class="nav-button">Главная</a>
+        <a href="menu.html" class="nav-button active">Меню</a>
+        <a href="about.html" class="nav-button">О нас</a>
+        <!-- Кнопка админ-панели (только для администраторов) -->
+        <a href="#" class="nav-button admin-only" id="adminPanelBtn" onclick="toggleAdminPanel()" style="display: none; background: #dc3545;">
+            🔧 Админ-панель
+        </a>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h1>🍔 Меню</h1>
+            
+            <div class="menu-categories">
+                <details class="menu-category">
+                    <summary>🍔 Бургеры</summary>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="199" data-name="Чизбургер">
+                                <span class="item-name">Чизбургер</span>
+                                <span class="item-price">199 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="179" data-name="Чикенбургер">
+                                <span class="item-name">Чикенбургер</span>
+                                <span class="item-price">179 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="169" data-name="Вегетарианский бургер">
+                                <span class="item-name">Вегетарианский бургер</span>
+                                <span class="item-price">169 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="229" data-name="Бургер с беконом">
+                                <span class="item-name">Бургер с беконом</span>
+                                <span class="item-price">229 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="129" data-name="Мини-сэндвич с ветчиной и сыром">
+                                <span class="item-name">Мини-сэндвич с ветчиной и сыром</span>
+                                <span class="item-price">129 ₽</span>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="menu-category">
+                    <summary>🍗 Крылышки и наггетсы</summary>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="299" data-name="Куриные крылышки">
+                                <span class="item-name">Куриные крылышки (6 шт)</span>
+                                <span class="item-price">299 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="189" data-name="Наггетсы">
+                                <span class="item-name">Наггетсы (8 шт)</span>
+                                <span class="item-price">189 ₽</span>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="menu-category">
+                    <summary>🍟 Картофель</summary>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="149" data-name="Картофель фри">
+                                <span class="item-name">Картофель фри</span>
+                                <span class="item-price">149 ₽</span>
+                            </label>
+                        </div>
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="159" data-name="Картофель по-деревенски">
+                                <span class="item-name">Картофель по-деревенски</span>
+                                <span class="item-price">159 ₽</span>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="menu-category">
+                    <summary>🥤 Напитки</summary>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <label>
+                                <input type="checkbox" data-price="79" data-name="Минеральная вода">
+                                <span class="item-name">Минеральная вода</span>
+                                <span class="item-price">79 ₽</span>
+                            </label>
+                        </div>
+                        
+                        <details class="sub-category">
+                            <summary>🧊 Холодные напитки</summary>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="129" data-name="Добрый Кола">
+                                        <span class="item-name">Добрый Кола</span>
+                                        <span class="item-price">129 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="129" data-name="Добрый Лимон-Лайм">
+                                        <span class="item-name">Добрый Лимон-Лайм</span>
+                                        <span class="item-price">129 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="129" data-name="Добрый Апельсин">
+                                        <span class="item-name">Добрый Апельсин</span>
+                                        <span class="item-price">129 ₽</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="sub-category">
+                            <summary>🍵 Чай</summary>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="89" data-name="Зелёный чай">
+                                        <span class="item-name">Зелёный чай</span>
+                                        <span class="item-price">89 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="89" data-name="Чёрный чай">
+                                        <span class="item-name">Чёрный чай</span>
+                                        <span class="item-price">89 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="99" data-name="Фруктовый чай">
+                                        <span class="item-name">Фруктовый чай</span>
+                                        <span class="item-price">99 ₽</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="sub-category">
+                            <summary>🧃 Соки</summary>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="139" data-name="Апельсиновый сок">
+                                        <span class="item-name">Апельсиновый сок</span>
+                                        <span class="item-price">139 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="139" data-name="Яблочный сок">
+                                        <span class="item-name">Яблочный сок</span>
+                                        <span class="item-price">139 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="149" data-name="Вишнёвый сок">
+                                        <span class="item-name">Вишнёвый сок</span>
+                                        <span class="item-price">149 ₽</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </details>
+
+                <details class="menu-category">
+                    <summary>🍰 Десерты</summary>
+                    <div class="menu-items">
+                        <details class="sub-category">
+                            <summary>🍦 Мороженое</summary>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="159" data-name="Шоколадное мороженое">
+                                        <span class="item-name">Шоколадное мороженое</span>
+                                        <span class="item-price">159 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="159" data-name="Ванильное мороженое">
+                                        <span class="item-name">Ванильное мороженое</span>
+                                        <span class="item-price">159 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="169" data-name="Клубничное мороженое">
+                                        <span class="item-name">Клубничное мороженое</span>
+                                        <span class="item-price">169 ₽</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="sub-category">
+                            <summary>🍪 Печенье</summary>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="89" data-name="Шоколадное печенье">
+                                        <span class="item-name">Шоколадное печенье</span>
+                                        <span class="item-price">89 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="79" data-name="Овсяное печенье">
+                                        <span class="item-name">Овсяное печенье</span>
+                                        <span class="item-price">79 ₽</span>
+                                    </label>
+                                </div>
+                                <div class="menu-item">
+                                    <label>
+                                        <input type="checkbox" data-price="69" data-name="Песочное печенье">
+                                        <span class="item-name">Песочное печенье</span>
+                                        <span class="item-price">69 ₽</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Кнопка добавления в корзину -->
+            <div class="cart-actions">
+                <button id="addToCartBtn" class="add-to-cart-btn" onclick="addSelectedToCart()">
+                    🛒 Добавить выбранное в корзину
+                </button>
+                <div id="cartTotal" class="cart-total" style="display: none;">
+                    Итого: <span id="totalAmount">0</span> ₽
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Перекусон. Все права защищены.</p>
+            <p>Телефон: +7 (999) 123-45-67</p>
+        </div>
+    </footer>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
