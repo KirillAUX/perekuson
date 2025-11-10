@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang = "ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#A63F00">
+    <meta name="description" content="Перекусон - быстрые и вкусные перекусы для занятых людей">
+    <meta name="keywords" content="еда, доставка, бургеры, перекусы, fastfood">
+    <title>Перекусон - Быстрые перекусы</title>
+    
+    <!-- PWA мета-теги -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Preload важных ресурсов -->
+    <link rel="preload" href="js/auth.js" as="script">
+    <link rel="preload" href="style.css" as="style">
+  </head>
+  <body>
+    <div id="offlineAlert" class="offline-alert" style="display: none;">
+        <span>📶 Вы в оффлайн-режиме. Некоторые функции могут быть недоступны.</span>
+        <button onclick="location.reload()" class="reload-btn">Обновить</button>
+    </div>
+    <header>
+      <div class="head">
+            <img class="img1" src="icon.png" alt="Иконка Перекусон" loading="lazy" width="70" height="70">
+            <span>Перекусон</span>
+        </div>
+        <div class="profile-dropdown">
+            <button class="profile-btn initials-btn" id="profileBtn" aria-label="Меню профиля">👤</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="menu-guest">
+                    <a href="login.html" class="nav-link">🔑 Вход</a>
+                    <a href="register.html" class="nav-link">📝 Регистрация</a>
+                </div>
+                <div class="menu-user" style="display: none;">
+                    <a href="profile.html" class="nav-link">👤 Мой профиль</a>
+                    <a href="orders.html" class="nav-link">📦 Мои заказы</a>
+                    <a href="settings.html" class="nav-link">⚙️ Настройки</a>
+                    <a href="#" class="da nav-link" onclick="logout()">🚪 Выйти</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <a href="index.html" class="nav-button active">🏠 Главная</a>
+        <a href="menu.html" class="nav-button">🍔 Меню</a>
+        <a href="cart.html" class="nav-button">🛒 Корзина (<span id="cartCount">0</span>)</a>
+        <a href="about.html" class="nav-button">ℹ️ О нас</a>
+    </nav>
+    <main>
+      <h1>🛒Корзина</h1>
+    </main>
+    <div class="bottom-nav">
+        <a href="index.html" class="bottom-nav-btn active" aria-label="Главная">🏠</a>
+        <a href="menu.html" class="bottom-nav-btn" aria-label="Меню">🍔</a>
+        <a href="cart.html" class="bottom-nav-btn" aria-label="Корзина">🛒</a>
+        <a href="profile.html" class="bottom-nav-btn" aria-label="Профиль">👤</a>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🍔 Перекусон</h3>
+                <p>Быстрые и вкусные перекусы для занятых людей</p>
+            </div>
+            <div class="footer-section">
+                <h3>📞 Контакты</h3>
+                <p>Телефон: +7 (999) 123-45-67</p>
+                <p>Email: info@perekuson.ru</p>
+            </div>
+            <div class="footer-section">
+                <h3>🔧 Разработка</h3>
+                <button onclick="clearAppData()" class="text-btn">🧹 Очистить данные приложения</button>
+                <button onclick="showDebugInfo()" class="text-btn">🐛 Информация для разработки</button>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2025 Перекусон. Все права защищены.</p>
+                <p class="app-version">Версия 1.0.0</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Загрузка скриптов -->
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+  </body>
+</html>
