@@ -152,7 +152,7 @@ class PerekusonApp {
                     name: 'Классический бургер',
                     price: 299,
                     category: 'burgers',
-                    image: 'https://via.placeholder.com/300x200/FF6B6B/white?text=🍔',
+                    image: 'https://gostinyj-dom.qr-cafe.ru/imagebase/a8ccf477bb26cb451f5ea096d58ac0a4.jpeg',
                     description: 'Сочная говяжья котлета с овощами',
                     available: true,
                     ingredients: ['Говяжья котлета', 'Сыр', 'Овощи', 'Соус']
@@ -162,7 +162,7 @@ class PerekusonApp {
                     name: 'Картофель фри',
                     price: 149,
                     category: 'snacks',
-                    image: 'https://via.placeholder.com/300x200/4ECDC4/white?text=🍟',
+                    image: 'https://avatars.mds.yandex.net/get-altay/14350490/2a000001973a1372fa2b3607c0dc77658a7e/XXL_height',
                     description: 'Хрустящий картофель с солью',
                     available: true,
                     ingredients: ['Картофель', 'Соль', 'Масло']
@@ -172,7 +172,7 @@ class PerekusonApp {
                     name: 'Кола',
                     price: 99,
                     category: 'drinks',
-                    image: 'https://via.placeholder.com/300x200/45B7D1/white?text=🥤',
+                    image: 'https://dogruhabercomtr.teimg.com/dogruhaber-com-tr/uploads/2025/06/5307ef3722439157397a56d79da.jpg',
                     description: 'Освежающий напиток',
                     available: true,
                     ingredients: ['Газированная вода', 'Сахар', 'Ароматизаторы']
@@ -182,7 +182,7 @@ class PerekusonApp {
                     name: 'Чизбургер',
                     price: 259,
                     category: 'burgers',
-                    image: 'https://via.placeholder.com/300x200/FF9E6B/white?text=🧀',
+                    image: 'https://avatars.mds.yandex.net/i?id=df94cef8f7ec4c2e2e4935ed91f17fd9_l-4302779-images-thumbs&n=13',
                     description: 'Бургер с двойным сыром',
                     available: true,
                     ingredients: ['Говяжья котлета', 'Сыр чеддер', 'Овощи', 'Соус']
@@ -192,7 +192,7 @@ class PerekusonApp {
                     name: 'Куриные наггетсы',
                     price: 189,
                     category: 'snacks',
-                    image: 'https://via.placeholder.com/300x200/FFD166/white?text=🍗',
+                    image: 'https://scdn.chibbis.ru/live/products/675cbb0fc80ae58007846f4a8e723517.jpeg',
                     description: 'Хрустящие куриные наггетсы',
                     available: true,
                     ingredients: ['Куриное филе', 'Панировка', 'Специи']
@@ -522,4 +522,5 @@ function showCategory(category) {
 
 function clearAppData() {
     app.clearAppData();
+
 }
