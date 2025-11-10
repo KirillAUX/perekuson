@@ -1,9 +1,15 @@
 // Менеджер корзины
 class CartManager {
     constructor() {
-        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        // Синхронизируем с app.cart если app существует
+        if (typeof app !== 'undefined' && app.cart) {
+            this.cart = app.cart;
+        } else {
+            this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        }
         this.promoCode = null;
         this.deliveryCost = 0;
+        this.init();
     }
 
     init() {
@@ -60,6 +66,12 @@ class CartManager {
     saveCart() {
         localStorage.setItem('cart', JSON.stringify(this.cart));
         this.updateCartCount();
+        
+        // Синхронизируем с app если он существует
+        if (typeof app !== 'undefined' && app.cart) {
+            app.cart = this.cart;
+            app.updateCartCount();
+        }
     }
 
     // Добавление товара в корзину
@@ -184,7 +196,7 @@ class CartManager {
         cartItemsList.innerHTML = this.cart.map(item => `
             <div class="cart-item" data-id="${item.id}">
                 <div class="cart-item-image">
-                    <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/80x80/4CAF50/white?text=🍔'">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjNENBRjUwIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtc2l6ZT0iMjAiPjHwn5G0PC90ZXh0Pgo8L3N2Zz4K'">
                 </div>
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
@@ -328,32 +340,6 @@ class CartManager {
     getCart() {
         return this.cart;
     }
-    class CartManager {
-    constructor() {
-        // Синхронизируем с app.cart если app существует
-        if (typeof app !== 'undefined' && app.cart) {
-            this.cart = app.cart;
-        } else {
-            this.cart = JSON.parse(localStorage.getItem('cart')) || [];
-        }
-        this.promoCode = null;
-        this.deliveryCost = 0;
-        this.init();
-    }
-
-    // ... остальные методы без изменений
-
-    saveCart() {
-        localStorage.setItem('cart', JSON.stringify(this.cart));
-        this.updateCartCount();
-        
-        // Синхронизируем с app если он существует
-        if (typeof app !== 'undefined' && app.cart) {
-            app.cart = this.cart;
-            app.updateCartCount();
-        }
-    }
-}
 }
 
 // Создаем глобальный экземпляр менеджера корзины
