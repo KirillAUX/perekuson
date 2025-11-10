@@ -328,6 +328,32 @@ class CartManager {
     getCart() {
         return this.cart;
     }
+    class CartManager {
+    constructor() {
+        // Синхронизируем с app.cart если app существует
+        if (typeof app !== 'undefined' && app.cart) {
+            this.cart = app.cart;
+        } else {
+            this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        }
+        this.promoCode = null;
+        this.deliveryCost = 0;
+        this.init();
+    }
+
+    // ... остальные методы без изменений
+
+    saveCart() {
+        localStorage.setItem('cart', JSON.stringify(this.cart));
+        this.updateCartCount();
+        
+        // Синхронизируем с app если он существует
+        if (typeof app !== 'undefined' && app.cart) {
+            app.cart = this.cart;
+            app.updateCartCount();
+        }
+    }
+}
 }
 
 // Создаем глобальный экземпляр менеджера корзины
