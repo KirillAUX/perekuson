@@ -30,28 +30,99 @@ class MenuManager {
     }
 
     addSelectedToCart() {
-        const selectedItems = this.getSelectedItems();
+    const selectedItems = this.getSelectedItems();
+    
+    if (selectedItems.length === 0) {
+        this.showMessage('Выберите хотя бы один товар!', 'error');
+        return;
+    }
+    
+    // Добавляем выбранные товары в корзину
+    let addedCount = 0;
+    
+    // Пробуем разные способы добавления в корзину
+    selectedItems.forEach(item => {
+        let added = false;
         
-        if (selectedItems.length === 0) {
-            this.showMessage('Выберите хотя бы один товар!', 'error');
-            return;
+        // Способ 1: через app (если доступен)
+        if (typeof app !== 'undefined' && app.addToCart) {
+            // Создаем временный ID для товара из меню
+            const tempProduct = {
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                available: true
+            };
+            // Добавляем в app.cart
+            const existingItem = app.cart.find(cartItem => cartItem.name === item.name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                app.cart.push({
+                    ...tempProduct,
+                    quantity: 1,
+                    addedAt: new Date().toISOString()
+                });
+            }
+            app.saveCart();
+            app.updateCartCount();
+            added = true;
+        }
+        // Способ 2: через cartManager (если доступен)
+        else if (typeof cartManager !== 'undefined' && cartManager.addToCart) {
+            const product = {
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                image: this.getProductImage(item.name),
+                category: this.getProductCategory(item.element)
+            };
+            cartManager.addToCart(product, 1);
+            added = true;
+        }
+        // Способ 3: напрямую в localStorage
+        else {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(cartItem => cartItem.name === item.name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: 1,
+                    image: this.getProductImage(item.name),
+                    category: this.getProductCategory(item.element),
+                    addedAt: new Date().toISOString()
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Обновляем счетчик в навигации
+            const cartCountElements = document.querySelectorAll('#cartCount');
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElements.forEach(element => {
+                element.textContent = totalItems;
+            });
+            
+            added = true;
         }
         
-        // Добавляем выбранные товары в корзину
-        let addedCount = 0;
-        selectedItems.forEach(item => {
-            if (typeof app !== 'undefined' && app.addToCart) {
-                const result = app.addToCart(this.generateProductId(item.name));
-                if (result) addedCount++;
-            }
-        });
-        
-        this.updateCartTotal();
-        this.showMessage(`Добавлено ${addedCount} товаров в корзину!`, 'success');
-        
-        // Сбрасываем выбор после добавления
-        this.clearSelection();
-    }
+        if (added) {
+            addedCount++;
+            this.showAddToCartAnimation(item.element);
+        }
+    });
+    
+    this.updateCartTotal();
+    this.showMessage(`Добавлено ${addedCount} товаров в корзину!`, 'success');
+    
+    // Сбрасываем выбор после добавления
+    this.clearSelection();
+}
 
     getSelectedItems() {
         const checkboxes = document.querySelectorAll('.menu-item input[type="checkbox"]:checked');
@@ -181,6 +252,60 @@ class MenuManager {
             parent = parent.parentElement.closest('.menu-category, .sub-category');
         }
     }
+    getProductImage(productName) {
+    // Маппинг названий товаров на эмодзи
+    const imageMap = {
+        'Чизбургер': '🍔',
+        'Чикенбургер': '🍗',
+        'Вегетарианский бургер': '🥬',
+        'Бургер с беконом': '🥓',
+        'Мини-сэндвич с ветчиной и сыром': '🥪',
+        'Куриные крылышки': '🍗',
+        'Наггетсы': '🍖',
+        'Картофель фри': '🍟',
+        'Картофель по-деревенски': '🥔',
+        'Минеральная вода': '💧',
+        'Добрый Кола': '🥤',
+        'Добрый Лимон-Лайм': '🍋',
+        'Добрый Апельсин': '🍊',
+        'Зелёный чай': '🍵',
+        'Чёрный чай': '🫖',
+        'Фруктовый чай': '🍎',
+        'Апельсиновый сок': '🧃',
+        'Яблочный сок': '🧃',
+        'Вишнёвый сок': '🧃',
+        'Шоколадное мороженое': '🍫',
+        'Ванильное мороженое': '🍦',
+        'Клубничное мороженое': '🍓',
+        'Шоколадное печенье': '🍪',
+        'Овсяное печенье': '🥠',
+        'Песочное печенье': '🥨'
+    };
+
+    return imageMap[productName] || '🍕';
+}
+
+getProductCategory(element) {
+    // Определяем категорию по родительскому элементу
+    const categoryElement = element.closest('.menu-category, .sub-category');
+    if (categoryElement) {
+        const summary = categoryElement.querySelector('summary');
+        if (summary) {
+            return summary.textContent.trim();
+        }
+    }
+    return 'Другое';
+}
+
+showAddToCartAnimation(element) {
+    const menuItem = element.closest('.menu-item');
+    if (menuItem) {
+        menuItem.style.background = '#d4edda';
+        setTimeout(() => {
+            menuItem.style.background = '';
+        }, 1000);
+    }
+}
 }
 
 // Создаем глобальный экземпляр менеджера меню
@@ -216,4 +341,5 @@ function addMenuControls() {
     if (menuSection) {
         menuSection.parentNode.insertBefore(menuControls, menuSection);
     }
+
 }
