@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#A63F00">
+    <meta name="description" content="Панель администратора Перекусон - управление акциями и контентом">
+    <meta name="keywords" content="админ, управление, акции, контент">
+    <title>Панель администратора - Перекусон</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Preload важных ресурсов -->
+    <link rel="preload" href="js/auth.js" as="script">
+    <link rel="preload" href="style.css" as="style">
+</head>
+<body>
+    <!-- Оффлайн уведомление -->
+    <div id="offlineAlert" class="offline-alert" style="display: none;">
+        <span>📶 Вы в оффлайн-режиме. Некоторые функции могут быть недоступны.</span>
+        <button onclick="location.reload()" class="reload-btn">Обновить</button>
+    </div>
+
+    <header>
+        <div class="head">
+            <img class="img1" src="icon.png" alt="Иконка Перекусон" loading="lazy" width="70" height="70">
+            <span>Панель администратора</span>
+        </div>
+        <div class="profile-dropdown">
+            <button class="profile-btn initials-btn" id="profileBtn" aria-label="Меню профиля">👤</button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="menu-user">
+                    <a href="profile.html" class="nav-link">👤 Мой профиль</a>
+                    <a href="index.html" class="nav-link">🏠 На главную</a>
+                    <a href="#" class="da nav-link" onclick="logout()">🚪 Выйти</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <a href="index.html" class="nav-button">🏠 Главная</a>
+        <a href="admin.html" class="nav-button active">🔧 Админ-панель</a>
+        <a href="menu.html" class="nav-button">🍔 Меню</a>
+        <a href="cart.html" class="nav-button">🛒 Корзина</a>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Проверка прав администратора -->
+            <div id="adminAccessDenied" class="access-denied" style="display: none;">
+                <div class="access-denied-content">
+                    <h2>🚫 Доступ запрещен</h2>
+                    <p>У вас недостаточно прав для доступа к панели администратора.</p>
+                    <a href="index.html" class="btn-primary">На главную</a>
+                </div>
+            </div>
+
+            <!-- Основной контент администратора -->
+            <div id="adminContent" style="display: none;">
+                <!-- Статистика -->
+                <section class="admin-stats-section">
+                    <h1>📊 Панель управления</h1>
+                    <div class="admin-stats-grid">
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="totalUsers">0</span>
+                                <span class="stat-label">Пользователей</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">🎉</div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="activePromotionsCount">0</span>
+                                <span class="stat-label">Активных акций</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">🛒</div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="totalOrders">0</span>
+                                <span class="stat-label">Заказов</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <span class="stat-number" id="totalRevenue">0 ₽</span>
+                                <span class="stat-label">Общий доход</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Управление акциями -->
+                <section class="admin-section">
+                    <div class="section-header">
+                        <h2>🎉 Управление акциями</h2>
+                        <button class="btn-primary" onclick="togglePromotionForm()" id="toggleFormBtn">
+                            ➕ Добавить акцию
+                        </button>
+                    </div>
+
+                    <!-- Форма добавления/редактирования акции -->
+                    <div id="promotionFormContainer" class="form-container" style="display: none;">
+                        <form id="promotionForm" class="admin-form">
+                            <input type="hidden" id="editingPromotionId" value="">
+                            
+                            <div class="form-group">
+                                <label for="promotionTitle">Название акции *</label>
+                                <input type="text" id="promotionTitle" required maxlength="100" 
+                                       placeholder="Введите название акции">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="promotionDescription">Описание *</label>
+                                <textarea id="promotionDescription" rows="3" required maxlength="500" 
+                                          placeholder="Опишите акцию"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="promotionImage">URL изображения</label>
+                                <input type="url" id="promotionImage" 
+                                       placeholder="https://example.com/image.jpg">
+                                <small class="form-hint">Оставьте пустым для изображения по умолчанию</small>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="promotionStartDate">Дата начала *</label>
+                                    <input type="date" id="promotionStartDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="promotionEndDate">Дата окончания *</label>
+                                    <input type="date" id="promotionEndDate" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="promotionStatus">Статус акции</label>
+                                <select id="promotionStatus">
+                                    <option value="active">Активная</option>
+                                    <option value="inactive">Неактивная</option>
+                                    <option value="scheduled">Запланированная</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="submit-btn" id="submitPromotionBtn">
+                                    🎉 Добавить акцию
+                                </button>
+                                <button type="button" class="btn-secondary" onclick="cancelEditing()">
+                                    ❌ Отмена
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Список акций -->
+                    <div class="promotions-management">
+                        <h3>📋 Список акций</h3>
+                        <div class="management-controls">
+                            <div class="search-box">
+                                <input type="text" id="promotionSearch" placeholder="Поиск акций..." 
+                                       onkeyup="filterPromotions()">
+                            </div>
+                            <div class="filter-controls">
+                                <select id="statusFilter" onchange="filterPromotions()">
+                                    <option value="all">Все статусы</option>
+                                    <option value="active">Активные</option>
+                                    <option value="inactive">Неактивные</option>
+                                    <option value="scheduled">Запланированные</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="promotionsList" class="promotions-list">
+                            <div class="loading-message">Загрузка акций...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Предпросмотр акций -->
+                <section class="admin-section">
+                    <h3>👀 Предпросмотр акций</h3>
+                    <p>Так акции видят пользователи на главной странице:</p>
+                    <div id="promotionsPreview" class="promotions-container">
+                        <!-- Акции будут загружены здесь -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🔧 Панель администратора</h3>
+                <p>Управление контентом и акциями</p>
+            </div>
+            <div class="footer-section">
+                <h3>📊 Статистика</h3>
+                <p>Пользователей: <span id="footerUsersCount">0</span></p>
+                <p>Акций: <span id="footerPromotionsCount">0</span></p>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2025 Перекусон. Админ-панель v1.0.0</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Загрузка скриптов -->
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+    // Проверка прав доступа при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAdminAccess();
+        initializeAdminPage();
+    });
+
+    function checkAdminAccess() {
+        const adminContent = document.getElementById('adminContent');
+        const accessDenied = document.getElementById('adminAccessDenied');
+        
+        if (typeof authSystem !== 'undefined' && authSystem.isAdmin()) {
+            adminContent.style.display = 'block';
+            accessDenied.style.display = 'none';
+        } else {
+            adminContent.style.display = 'none';
+            accessDenied.style.display = 'block';
+        }
+    }
+
+    function initializeAdminPage() {
+        if (typeof authSystem === 'undefined' || !authSystem.isAdmin()) return;
+        
+        // Ждем загрузки adminManager
+        const checkAdminManager = setInterval(() => {
+            if (typeof adminManager !== 'undefined') {
+                clearInterval(checkAdminManager);
+                loadAdminStats();
+                adminManager.loadPromotions();
+                setupEventListeners();
+                console.log('Админ-панель инициализирована');
+            }
+        }, 100);
+
+        // Таймаут на случай если adminManager не загрузится
+        setTimeout(() => {
+            clearInterval(checkAdminManager);
+            if (typeof adminManager === 'undefined') {
+                console.error('adminManager не загружен');
+                showAdminMessage('Ошибка загрузки админ-панели', 'error');
+            }
+        }, 5000);
+    }
+
+    function loadAdminStats() {
+        if (authSystem.getStats) {
+            const stats = authSystem.getStats();
+            
+            // Обновление статистики
+            document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
+            document.getElementById('activePromotionsCount').textContent = stats.activePromotions || 0;
+            document.getElementById('totalOrders').textContent = stats.totalOrders || 0;
+            document.getElementById('totalRevenue').textContent = (stats.totalRevenue || 0).toLocaleString('ru-RU') + ' ₽';
+            
+            // Обновление в футере
+            document.getElementById('footerUsersCount').textContent = stats.totalUsers || 0;
+            document.getElementById('footerPromotionsCount').textContent = stats.activePromotions || 0;
+        }
+    }
+
+    function setupEventListeners() {
+        // Обработка формы
+        const promotionForm = document.getElementById('promotionForm');
+        if (promotionForm) {
+            promotionForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handlePromotionSubmit();
+            });
+        }
+
+        // Установка дат по умолчанию
+        setDefaultDates();
+    }
+
+    function setDefaultDates() {
+        const today = new Date().toISOString().split('T')[0];
+        const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        
+        const startDateInput = document.getElementById('promotionStartDate');
+        const endDateInput = document.getElementById('promotionEndDate');
+        
+        if (startDateInput && !startDateInput.value) startDateInput.value = today;
+        if (endDateInput && !endDateInput.value) endDateInput.value = nextWeek;
+    }
+
+    function togglePromotionForm() {
+        const formContainer = document.getElementById('promotionFormContainer');
+        const toggleBtn = document.getElementById('toggleFormBtn');
+        
+        if (formContainer.style.display === 'none') {
+            formContainer.style.display = 'block';
+            toggleBtn.textContent = '👁️ Скрыть форму';
+            cancelEditing(); // Сброс формы при открытии
+        } else {
+            formContainer.style.display = 'none';
+            toggleBtn.textContent = '➕ Добавить акцию';
+        }
+    }
+
+    function handlePromotionSubmit() {
+        if (typeof adminManager === 'undefined') {
+            showAdminMessage('Менеджер администратора не загружен', 'error');
+            return;
+        }
+
+        const editingId = document.getElementById('editingPromotionId').value;
+        
+        if (editingId) {
+            adminManager.updatePromotion(editingId);
+        } else {
+            adminManager.addPromotion();
+        }
+    }
+
+    function editPromotion(promotionId) {
+        if (typeof adminManager === 'undefined') {
+            showAdminMessage('Менеджер администратора не загружен', 'error');
+            return;
+        }
+        adminManager.editPromotion(promotionId);
+    }
+
+    function cancelEditing() {
+        if (typeof adminManager === 'undefined') {
+            showAdminMessage('Менеджер администратора не загружен', 'error');
+            return;
+        }
+        adminManager.cancelEditing();
+    }
+
+    function filterPromotions() {
+        if (typeof adminManager === 'undefined') {
+            showAdminMessage('Менеджер администратора не загружен', 'error');
+            return;
+        }
+        adminManager.filterPromotions();
+    }
+
+    // Глобальные функции для кнопок
+    function logout() {
+        if (authSystem && authSystem.logout) {
+            authSystem.logout();
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Функция для показа сообщений в админ-панели
+    function showAdminMessage(message, type = 'success') {
+        // Сначала пробуем использовать глобальную функцию showMessage из auth.js
+        if (typeof window.showMessage === 'function' && window.showMessage !== showAdminMessage) {
+            window.showMessage(message, type);
+            return;
+        }
+
+        // Fallback для админ-панели
+        let messageElement = document.getElementById('adminMessage');
+        if (!messageElement) {
+            messageElement = document.createElement('div');
+            messageElement.id = 'adminMessage';
+            messageElement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            document.body.appendChild(messageElement);
+        }
+
+        const styles = {
+            success: { background: '#28a745' },
+            error: { background: '#dc3545' },
+            warning: { background: '#ffc107', color: '#212529' },
+            info: { background: '#17a2b8' }
+        };
+
+        Object.assign(messageElement.style, styles[type] || styles.success);
+        messageElement.textContent = message;
+        messageElement.style.display = 'block';
+        
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 5000);
+    }
+	</script>
+</body>
+</html>
