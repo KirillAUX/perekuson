@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Перекусон</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="head">
+            <img class="img1" src="icon.png" alt="Иконка">
+            <span>Перекусон</span>
+        </div>
+        <a href="index.html" class="back-button">← Назад</a>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <div class="auth-form">
+                <h2>Вход в систему</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+						<label for="loginEmail">Email или имя пользователя:</label>
+						<input type="text" id="loginEmail" name="loginEmail" required 
+							placeholder="admin или admin@perekuson.ru">
+					</div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль:</label>
+                        <input type="password" id="loginPassword" name="loginPassword" required>
+                    </div>
+
+                    <div class="form-options">
+                        <label>
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            Запомнить меня
+                        </label>
+                        <a href="#" class="forgot-password">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Войти</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Нет аккаунта? <a href="register.html">Зарегистрируйтесь здесь</a></p>
+                </div>
+
+                <div id="message" class="message"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>
