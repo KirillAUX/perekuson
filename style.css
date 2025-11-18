@@ -67,6 +67,7 @@ footer {
     text-align: center;
     padding: 20px;
     margin-top: 40px;
+	color: #A63F00;
 }
 
 .footer-content {
@@ -1781,3 +1782,4 @@ input.error {
     }
 
 }
+
